@@ -1,0 +1,10 @@
+# Automate deployment of containers
+
+name: Deploy Workflow
+on: push
+
+jobs:
+    deploy-container:
+        runs-on: ubuntu-latest
+        steps:
+            - run: echo "Automate deployment of containers"
