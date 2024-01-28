@@ -1,7 +1,18 @@
-# devops-qr-code
+# devops-qr-code-generator
 
 This is the sample application for the DevOps Capstone Project.
 It generates QR Codes for the provided URL, the front-end is in NextJS and the API is written in Python using FastAPI.
+
+## Tools
+| Order   | Concepts                  | Tools                   |
+| :---    | :----:                    |     ---:                |
+| 1       | CI/CD                     | GitHub Actions          |
+| 2       | IaC                       | CloudFormation          |
+| 3       | Containers                | Docker                  |
+| 4       | Containers orchestration  | Kubernetes              |
+| 5       | Monitoring                | Prometheus and Grafana  |
+
+
 
 ## Application
 
@@ -17,7 +28,7 @@ The API code exists in the `api` directory. You can run the API server locally:
 
 - Clone this repo
 - Make sure you are in the `api` directory
-- Create a virtualenv by typing in the following command: `python -m venv .venv`
+- Create a virtualenv by typing in the following command: `python3 -m venv .venv`
 - Install the required packages: `pip install -r requirements.txt`
 - Create a `.env` file, and add you AWS Access and Secret key, check  `.env.example`
 - Also, change the BUCKET_NAME to your S3 bucket name in `main.py`
