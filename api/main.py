@@ -1,3 +1,4 @@
+import uvicorn
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 import qrcode
@@ -5,14 +6,16 @@ import boto3
 from io import BytesIO
 
 # Loading Environment variable (AWS Access Key and Secret Key)
-from dotenv import load_dotenv
-load_dotenv()
+from dotenv import load_dotenv, find_dotenv
+env_file = find_dotenv(".env")
+load_dotenv(env_file)
 
 app = FastAPI()
 
 # Allowing CORS for local testing
 origins = [
-    "http://localhost:3000"
+    "http://localhost",
+    "http://localhost:8000"
 ]
 
 app.add_middleware(
@@ -24,7 +27,11 @@ app.add_middleware(
 
 # AWS S3 Configuration
 s3 = boto3.client('s3')
-bucket_name = 'YOUR_BUCKET_NAME' # Add your bucket name here
+bucket_name = 'qr-code-generator-bucket' # Add your bucket name here
+
+@app.get("/")
+async def root():
+    return {"message": "Hello World"}
 
 @app.post("/generate-qr/")
 async def generate_qr(url: str):
@@ -57,4 +64,6 @@ async def generate_qr(url: str):
         return {"qr_code_url": s3_url}
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
-    
+
+if __name__ == "__main__":
+    uvicorn.run(app, host="127.0.0.1", port=8000)
