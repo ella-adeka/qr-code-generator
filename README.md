@@ -7,12 +7,14 @@ It generates QR Codes for the provided URL, the front-end is in NextJS and the A
 | Order   | Concepts                  | Tools                   |
 | :---    | :----:                    |     ---:                |
 | 1       | CI/CD                     | GitHub Actions          |
-| 2       | IaC                       | CloudFormation          |
+| 2       | IaC                       | AWS CloudFormation      |
 | 3       | Containers                | Docker                  |
 | 4       | Containers orchestration  | Kubernetes              |
 | 5       | Monitoring                | Prometheus and Grafana  |
 
+## Project
 
+## Architecture
 
 ## Application
 
@@ -20,12 +22,15 @@ It generates QR Codes for the provided URL, the front-end is in NextJS and the A
 
 **API**: API that receives URLs and generates QR codes. The API stores the QR codes in cloud storage(AWS S3 Bucket).
 
-## Running locally
+## Prerequisites
+- AWS account with appropriate access
+- A Docker account
+- A GitHub repository
 
-### API
-
+## Steps
+### 1. Run locally
+#### API
 The API code exists in the `api` directory. You can run the API server locally:
-
 - Clone this repo
 - Make sure you are in the `api` directory
 - Create a virtualenv by typing in the following command: `python3 -m venv .venv`
@@ -35,22 +40,70 @@ The API code exists in the `api` directory. You can run the API server locally:
 - Run the API server: `uvicorn main:app --reload`
 - Your API Server should be running on port `http://localhost:8000`
 
-### Front-end
-
+#### Front-end
 The front-end code exits in the `front-end-nextjs` directory. You can run the front-end server locally:
-
 - Clone this repo
 - Make sure you are in the `front-end-nextjs` directory
 - Install the dependencies: `npm install`
 - Run the NextJS Server: `npm run dev`
 - Your Front-end Server should be running on `http://localhost:3000`
+### 2. Create the repository
+- Create a new GitHub repository 
+- Open the repository Settings, and go to Secrets and variables > Actions.
+- Create a new secret named `DOCKERHUB_USERNAME` and your Docker ID as value.
+- Create a new Personal Access Token (PAT) for Docker Hub. You can name this token `qrcodeci`.
+- Add the PAT as the second secret in your GitHub repository, with the name `DOCKERHUB_TOKEN`.
+### 3. Containerization
+- Create Dockerfiles for Frontend and API in the respective directories
+- For the API
+``` Dockerfile
+# Use an official Python runtime as the parent image 
+FROM python:3.11.3-slim
 
+# Set the working directory
+WORKDIR /usr/src/app
 
-## Goal
+# Copy the current directory contents into the containers /app
+COPY ./requirements.txt /usr/src/app/requirements.txt
 
-The goal is to get hands-on with DevOps practices like Containerization, CICD and monitoring.
+# Install the dependencies
+RUN pip install --upgrade pip
+RUN pip install --no-cache-dir -r requirements.txt
 
-Look at the capstone project for more detials.
+# Add application
+COPY . /usr/src/app
+
+# Run the API server
+CMD uvicorn main:app --reload
+```
+
+- For the frontend
+``` Dockerfile
+# Use an official Node runtime as the parent image 
+FROM node:10.16.0-alpine
+
+# Set the working directory
+WORKDIR /usr/src/app
+ENV PATH /usr/src/app/node_modules/.bin:$PATH
+
+# Install dependencies
+COPY package.json /usr/src/app/package.json
+RUN npm install
+
+# Expose the port 3000
+EXPOSE 3000
+
+# Run the server
+CMD [ "npm", "run", "dev" ]
+```
+- 
+### 4. Container Orchestration
+### 5. CI/CD
+- Define the Github Actions workflow steps
+
+- Run the workflow
+### 5. IaC
+### 6. Monitor 
 
 ## Author
 
