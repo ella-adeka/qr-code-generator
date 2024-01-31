@@ -1,0 +1,39 @@
+README.md
+CHANGELOG.md
+
+# Compiled Python Files
+*.pyc
+pycache/
+.pytest_cache
+
+# Distribution/packaging
+.Python
+env/
+build/
+dist/
+downloads/
+eggs/
+lib/
+lib64/
+sdist/
+
+# Django
+*.log
+
+# Docker
+.docker
+docker-compose.yml
+Dockerfile*
+
+# Editor and IDE files
+.vscode/
+
+# Git
+.git
+.gitattributes
+.gitignore
+
+# Virtual environment
+.env/
+.venv/
+venv/
