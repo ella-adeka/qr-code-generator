@@ -1,0 +1,19 @@
+# Test entire application
+
+name: Test Application
+on: 
+    workflow_dispatch
+# on: 
+#     push:
+#         branches:
+#             - 'main'
+
+jobs:
+    test-application:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout
+              uses: actions/checkout@v4
+            
+            - name: Run frontend test
+              run: echo "Testing frontend"
