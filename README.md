@@ -4,13 +4,13 @@ This is the sample application for the DevOps Capstone Project.
 It generates QR Codes for the provided URL, the front-end is in NextJS and the API is written in Python using FastAPI.
 
 ## Tools
-| Order   | Concepts                  | Tools                   |
-| :---    | :----:                    |     ---:                |
-| 1       | CI/CD                     | GitHub Actions          |
-| 2       | IaC                       | AWS CloudFormation      |
-| 3       | Containers                | Docker                  |
-| 4       | Containers orchestration  | Kubernetes              |
-| 5       | Monitoring                | Prometheus and Grafana  |
+| Order   | Concepts                    | Tools                                     |
+| :---    | :----:                      |     ---:                                  |
+| 1       | CI/CD                       | GitHub Actions                            |
+| 2       | IaC                         | AWS CloudFormation                        |
+| 3       | Containers                  | Docker                                    |
+| 4       | Containers orchestration    | Kubernetes                                |
+| 5       | Monitoring                  | CloudWatch Container Metrics and Grafana  |
 
 ## Project
 
@@ -47,13 +47,15 @@ The front-end code exits in the `front-end-nextjs` directory. You can run the fr
 - Install the dependencies: `npm install`
 - Run the NextJS Server: `npm run dev`
 - Your Front-end Server should be running on `http://localhost:3000`
+
 ### 2. Create the repository
 - Create a new GitHub repository 
 - Open the repository Settings, and go to Secrets and variables > Actions.
 - Create a new secret named `DOCKERHUB_USERNAME` and your Docker ID as value.
 - Create a new Personal Access Token (PAT) for Docker Hub. You can name this token `qrcodeci`.
 - Add the PAT as the second secret in your GitHub repository, with the name `DOCKERHUB_TOKEN`.
-### 3. Containerization
+
+### 3. Containerization with Docker
 - Create Dockerfiles for Frontend and API in the respective directories
 - For the API
 ``` Dockerfile
@@ -96,14 +98,32 @@ EXPOSE 3000
 # Run the server
 CMD [ "npm", "run", "dev" ]
 ```
-- 
-### 4. Container Orchestration
-### 5. CI/CD
-- Define the Github Actions workflow steps
 
+After creating Docker images, we deploy the containers to a Kubernetes cluster. Kubernetes orchestrates the deployment, scaling, and management of our containerized applications.
+
+### 4. Container Orchestration with Kubernetes
+- Containerization with Docker is the first step vefore orchestration.
+
+- Deployment YAML files (`frontend-deployment.yaml` and `api-deployment.yaml`) specify the desired state of your applications. Service YAML files (`frontend-service.yaml` and `api-service.yaml`) define network services.
+
+- Use kubectl apply to deploy your applications to the Kubernetes cluster.
+```bash
+kubectl apply -f kubernetes/frontend/frontend-deployment.yaml
+kubectl apply -f kubernetes/frontend/frontend-service.yaml
+
+kubectl apply -f kubernetes/api/api-deployment.yaml
+kubectl apply -f kubernetes/api/api-service.yaml
+```
+
+### 5. CI/CD with GitHub Actions
+- Define the Github Actions workflow steps
 - Run the workflow
-### 5. IaC
-### 6. Monitor 
+
+### 5. IaC with CloudFormation
+- 
+
+### 6. Monitoring with CloudWatch Container Metrics and Grafana
+
 
 ## Author
 
