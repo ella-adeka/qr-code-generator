@@ -13,7 +13,8 @@ env:
     DOCKERHUB_TOKEN: ${{ secrets.DOCKERHUB_TOKEN }}
 
 jobs:
-    deploy-containers:
+    build:
+        name: build
         runs-on: ubuntu-latest
         strategy:
             fail-fast: false
@@ -24,7 +25,9 @@ jobs:
                     - image: ella-adeka/api
                       dockerfile: qr-code-generator/api/Dockerfile
         permissions:
+            id-token: write
             contents: read
+            actions: read
             packages: write
         steps:
             - name: Checkout repository
@@ -59,3 +62,43 @@ jobs:
                 push: true
                 tags: ${{ steps.meta.outputs.tags }}
                 labels: ${{ steps.meta.outputs.labels }}
+                cache-from: type=gha
+                cache-to: type=gha, mode=max
+
+    deploy:
+        name: Deploy
+        needs: [ build ]
+        runs-on: ubuntu-latest
+        permissions:
+            id-token: write
+            contents: read
+            actions: read
+            packages: write
+        steps:
+            - name: Setup Kubernetes Context
+              uses: azure/k8s-set-context@v2
+              with: 
+                method: service-account
+                k8s-url: <server-url>
+                k8s-secret: ${{ secrets.KUBERNETES_SECRET }}
+
+            - name: Checkout repository
+              uses: actions/checkout@v4
+
+            - name: Deploy to Kubernetes
+              uses: azure/k8s-deploy@v1
+              with:
+                namespace: default
+                manifests: |
+                    kubernetes/frontend/frontend-deployment.yaml
+                    kubernetes/frontend/frontend-service.yaml
+                    kubernetes/api/api-deployment.yaml
+                    kubernetes/api/api-service.yaml
+                    
+            #   run: |
+            #     kubectl apply -f kubernetes/nextjs/nextjs-deployment.yaml
+            #     kubectl apply -f kubernetes/nextjs/nextjs-service.yaml
+              
+            #     kubectl apply -f kubernetes/fastapi/fastapi-deployment.yaml
+            #     kubectl apply -f kubernetes/fastapi/fastapi-service.yaml
+              
