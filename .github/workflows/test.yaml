@@ -10,7 +10,7 @@ on:
 
 jobs:
     test-frontend:
-        name: test
+        name: test-frontend
         runs-on: ubuntu-latest
         steps:
             - name: Checkout
@@ -23,11 +23,17 @@ jobs:
               uses: actions/setup-node@v3
               with:
                 node-version: '18.x'
-            - run: npm install
-            - run: npm test
+            
+            - name: Install npm
+              working-directory: ./front-end-nextjs
+              run: npm install
+              
+            - name: Run frontend test
+              working-directory: ./front-end-nextjs
+              run: npm test
 
     test-backend:
-        name: test
+        name: test-backend
         needs: [ test-frontend ]
         runs-on: ubuntu-latest
         steps:
@@ -43,12 +49,14 @@ jobs:
                 python-version: '3.9'
 
             - name: Install dependencies
+              working-directory: ./api
               run: |
                 python -m pip install --upgrade pip
-                pip install -r ./api/requirements.txt
+                pip install -r requirements.txt
 
             - name: Test with pytest
-              run: pytest ./test.py
+              working-directory: ./api
+              run: pytest test.py
 
 
     
