@@ -114,13 +114,24 @@ kubectl apply -f kubernetes/frontend/frontend-service.yaml
 kubectl apply -f kubernetes/api/api-deployment.yaml
 kubectl apply -f kubernetes/api/api-service.yaml
 ```
+- Create an ECR repository
+- Set up an EKS Cluster
+
 
 ### 5. CI/CD with GitHub Actions
-- Define the Github Actions workflow steps
+- Define the Github Actions workflows `test` and `deploy`
+#### Test workflow
+- Test frontend with `npm test`
+- Test backend with `pytest <test-file.py>`
+
+#### Deploy workflow
+- `build` job to build Docker image
+- `deploy` job to deploy to Kubernetes
+
 - Run the workflow
 
 ### 5. IaC with CloudFormation
-- 
+- Write the build template to create an EKS cluster
 
 ### 6. Monitoring with CloudWatch Container Metrics and Grafana
 
